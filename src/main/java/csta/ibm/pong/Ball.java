@@ -1,4 +1,4 @@
-import csta.ibm.pong.GameObject;
+package csta.ibm.pong;
 
 public class Ball extends GameObject {
     private int dx;

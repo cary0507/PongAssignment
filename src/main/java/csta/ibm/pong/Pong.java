@@ -4,7 +4,7 @@
 * Player wins if the other player's paddle missed the ball
 * */
 
-import csta.ibm.pong.Game;
+package csta.ibm.pong;  // This can access package-private classes like _WinDialog
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,18 +18,23 @@ public class Pong extends Game {
     private Paddle player2;  // Right paddle
     private JLabel scores;  // Display score
 
+    private int CENTER_X;
+    private int CENTER_Y;
+
     // First player reaching 3 scores wins
     private final int WIN_SCORE = 3;
     private int p1Score = 0;
     private int p2Score = 0;
 
+    class ModifiedWinDialog extends _WinDialog {
+        public ModifiedWinDialog(JFrame parent, String winner) {
+            super(parent, winner);
+        }
+    }
+
     public Pong() {
         super();
         super.setResizable(false);  // Disable resizing
-        ball = new Ball();
-        player1 = new Paddle();
-        player2 = new Paddle();
-        scores = new JLabel();
     }
 
     /**
@@ -38,46 +43,55 @@ public class Pong extends Game {
     private static int pivotOffset(int pivot, int size) {
         return pivot - size / 2;
     }
-
-    @Override
-    public void setup() {
-        int gameCenterX = getFieldWidth() / 2;
-        int gameCenterY = getFieldHeight() / 2;
-
-        // Text setup
-        int scoresWidth = 160;
-        int scoresHeight = 50;
-        int scoreLeft = pivotOffset(gameCenterX, scoresWidth);
-        scores.setForeground(Color.white);
-        scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
-        scores.setHorizontalAlignment(SwingConstants.CENTER);
-        add(scores);
-
+    public void resetPosition() {
         // Ball setup
         int ballRadius = 10;
-        int ballLeft = pivotOffset(gameCenterX, ballRadius);  // Pivot ball to the screen center
-        int ballTop = pivotOffset(gameCenterY, ballRadius);
+        int ballLeft = pivotOffset(CENTER_X, ballRadius);  // Pivot ball to the screen center
+        int ballTop = pivotOffset(CENTER_Y, ballRadius);
         ball.setSize(ballRadius, ballRadius);
         ball.setX(ballLeft); ball.setY(ballTop);
-        ball.setVelocity(-2, 0);
-        add(ball);
+        ball.setVelocity(-5, 0);
 
         // Paddles setup
-        int initialPaddleSpeed = 2;
+        int initialPaddleSpeed = 5;
         int paddleWidth = 10;
         int paddleHeight = 100;
-        int paddleTop = pivotOffset(gameCenterY, paddleHeight);
+        int paddleTop = pivotOffset(CENTER_Y, paddleHeight);
         int paddleXOffset = 20;  // Distance away from screen bounds
         // Player 1
         player1.setSize(paddleWidth, paddleHeight);
         player1.setX(paddleXOffset); player1.setY(paddleTop);
         player1.setYSpeed(initialPaddleSpeed);
-        add(player1);
         // Player 2
         int rPaddleLeft = getFieldWidth() - paddleWidth - paddleXOffset;
         player2.setSize(paddleWidth, paddleHeight);
         player2.setX(rPaddleLeft); player2.setY(paddleTop);
         player2.setYSpeed(initialPaddleSpeed);
+    }
+
+    @Override
+    public void setup() {
+        setDelay(10);
+        CENTER_X = getFieldWidth() / 2;
+        CENTER_Y = getFieldHeight() / 2;
+        // Text setup
+        scores = new JLabel();
+        int scoresWidth = 160;
+        int scoresHeight = 50;
+        int scoreLeft = pivotOffset(CENTER_X, scoresWidth);
+        scores.setForeground(Color.white);
+        scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
+        scores.setHorizontalAlignment(SwingConstants.CENTER);
+        // Initialize game objects
+        ball = new Ball();
+        player1 = new Paddle();
+        player2 = new Paddle();
+        // Setup locations
+        resetPosition();
+        // Add to Pong
+        add(scores);
+        add(ball);
+        add(player1);
         add(player2);
     }
 
@@ -93,12 +107,12 @@ public class Pong extends Game {
         // Out of left bound: player 2 gets score
         if (ball.getX() <= 0) {
             p2Score++;
-            setup();  // Reset game board
+            resetPosition();  // Reset game board
         }
         // Out of right bound: player 1 gets score
         if (ball.getX() + ball.getWidth() >= getFieldWidth()) {
             p1Score++;
-            setup();
+            resetPosition();
         }
 
         // Check if any player won
@@ -155,6 +169,7 @@ public class Pong extends Game {
 
     public static void main(String[] args) {
         Pong p = new Pong();
+        p.resize(800, 600);
         p.setVisible(true);
         p.initComponents();
     }

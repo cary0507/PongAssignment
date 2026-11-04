@@ -1,4 +1,4 @@
-import csta.ibm.pong.GameObject;
+package csta.ibm.pong;
 
 public class Paddle extends GameObject {
     // Separate ySpeed and dy so that when the ball hits the paddle, know the magnitude for paddle's current y change
