@@ -8,6 +8,8 @@ package csta.ibm.pong;  // This can access package-private classes like _WinDial
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Pong extends Game {
     /* Have to initialize objects outside of setup because setup will be also used as a reset method for now
@@ -25,12 +27,6 @@ public class Pong extends Game {
     private final int WIN_SCORE = 3;
     private int p1Score = 0;
     private int p2Score = 0;
-
-    class ModifiedWinDialog extends _WinDialog {
-        public ModifiedWinDialog(JFrame parent, String winner) {
-            super(parent, winner);
-        }
-    }
 
     public Pong() {
         super();
@@ -67,6 +63,30 @@ public class Pong extends Game {
         player2.setSize(paddleWidth, paddleHeight);
         player2.setX(rPaddleLeft); player2.setY(paddleTop);
         player2.setYSpeed(initialPaddleSpeed);
+    }
+
+    @Override
+    public void p1Wins() {
+        _WinDialog d = new _WinDialog(this, "Player 1 Wins!");
+        d.ok.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(1);  // When OK button pressed, quit the game
+                setVisible(false);
+            }
+        });
+        d.setVisible(true);
+    }
+
+    @Override
+    public void p2Wins() {
+        _WinDialog d = new _WinDialog(this, "Player 2 Wins!");
+        d.ok.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(1);
+                setVisible(false);
+            }
+        });
+        d.setVisible(true);
     }
 
     @Override
