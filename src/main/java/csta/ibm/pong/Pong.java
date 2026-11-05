@@ -171,8 +171,8 @@ public class Pong extends Game {
         }
         // Player 2 keypress
         if (NKeyPressed()) {
-            if (player1.getY() < 0) {
-                player1.setY(0);
+            if (player2.getY() < 0) {
+                player2.setY(0);
             } else {
                 player2.moveUp();
             }
