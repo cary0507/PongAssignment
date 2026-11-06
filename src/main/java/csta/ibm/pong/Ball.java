@@ -3,15 +3,19 @@ package csta.ibm.pong;
 public class Ball extends GameObject {
     private int dx;
     private int dy;
+    private int maxDy;
 
     public void setVelocity(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
+        maxDy = 4;
     }
 
     public void bouncePaddle(int paddleDY) {
         dx = -dx;
-        dy += paddleDY;  // Sliding
+        int newSpeed = Math.min(Math.abs(paddleDY), maxDy);
+        if (paddleDY < 0) newSpeed = -newSpeed;
+        dy += newSpeed;
     }
 
     public void bounceY() {
