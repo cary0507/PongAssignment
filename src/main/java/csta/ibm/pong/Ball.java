@@ -1,27 +1,64 @@
+/*
+* Author: Cary
+* */
+
 package csta.ibm.pong;
 
+import java.awt.*;
+
+/**
+ * A class representing the ball in the Pong game. It extends the GameObject class and handles the ball's movement,
+ * velocity, and collision behavior with paddles and walls.
+ * */
 public class Ball extends GameObject {
     private int dx;
     private int dy;
     private int maxDy;
 
+    /**
+     * Set the default horizontal and vertical velocity of the ball
+     * @param dx the horizontal velocity of the ball
+     * @param dy the vertical velocity of the ball
+     * */
     public void setVelocity(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
         maxDy = 4;
     }
 
+    /**
+     * Bounce the ball off the paddle and adjust the vertical velocity based on the paddle's vertical velocity
+     * If ball and paddle have the same direction for dy, the ball's dy will increase, otherwise it will set ball's
+     * dy to the paddle's dy
+     * <a href="https://www.mathsisfun.com/algebra/vectors-dot-product.html">Reference for dot product</a>
+     * @param paddleDY the vertical velocity of the paddle
+     * */
     public void bouncePaddle(int paddleDY) {
         dx = -dx;
-        int newSpeed = Math.min(Math.abs(paddleDY), maxDy);
-        if (paddleDY < 0) newSpeed = -newSpeed;
-        dy += newSpeed;
+        // Dot product of the paddle's vertical velocity and the ball's vertical velocity to determine the new
+        // vertical velocity's direction of the ball
+        int dotProduct = dy * paddleDY;
+        if (dotProduct > 0) {
+            // If the ball and paddle are moving in the same direction, increase the ball's vertical velocity
+            int limitedDy = Math.min(Math.abs(dy) + Math.abs(paddleDY), maxDy);
+            dy = (dy > 0) ? limitedDy : -limitedDy;
+        } else {
+            // If the ball and paddle are moving in opposite directions, set the ball's vertical velocity to the
+            // paddle's vertical velocity
+            dy = paddleDY;
+        }
     }
 
+    /**
+     * Bounce the ball of the wall by reversing the vertical velocity
+     * */
     public void bounceY() {
         dy = -dy;
     }
 
+    /**
+     * During every game tick, update the ball's position according to its current x and y velocities
+     * */
     @Override
     public void act() {
         // Get the next position
@@ -30,5 +67,14 @@ public class Ball extends GameObject {
         // Move it to the next position
         setX(nexX);
         setY(nexY);
+    }
+
+    /**
+     * Override the paint method to draw the ball as a filled circle
+     * */
+    @Override
+    public void paint(Graphics g) {
+        g.setColor(this.c);
+        g.fillOval(getX(), getY(), getWidth(), getHeight());
     }
 }

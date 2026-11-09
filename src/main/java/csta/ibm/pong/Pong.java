@@ -11,6 +11,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The main class for the Pong game. It extends the Game class and implements the game logic, including player controls,
+ * ball movement, collision detection, and score tracking.
+ * */
 public class Pong extends Game {
     /* Have to initialize objects outside of setup because setup will be also used as a reset method for now
     * If initialize inside setup, everytime the game reset it will create new objects.
@@ -39,6 +43,10 @@ public class Pong extends Game {
     private static int pivotOffset(int pivot, int size) {
         return pivot - size / 2;
     }
+
+    /**
+     * Reset the ball to the center of the screen, and reset the paddles to the edges of the screen
+     * */
     public void resetPosition() {
         // Ball setup
         int ballRadius = 10;
@@ -65,6 +73,9 @@ public class Pong extends Game {
         player2.setYSpeed(initialPaddleSpeed);
     }
 
+    /**
+     * Override p1Wins so it quits the game after pressing the OK button
+     * */
     @Override
     public void p1Wins() {
         _WinDialog d = new _WinDialog(this, "Player 1 Wins!");
@@ -77,6 +88,9 @@ public class Pong extends Game {
         d.setVisible(true);
     }
 
+    /**
+     * Override p2Wins so it quits the game after pressing the OK button
+     * */
     @Override
     public void p2Wins() {
         _WinDialog d = new _WinDialog(this, "Player 2 Wins!");
@@ -89,6 +103,10 @@ public class Pong extends Game {
         d.setVisible(true);
     }
 
+    /**
+     * Initialize all objects and call resetPosition to set the initial positions of the ball and paddles.
+     * Also sets up the score display.
+     * */
     @Override
     public void setup() {
         setDelay(10);
@@ -115,6 +133,10 @@ public class Pong extends Game {
         add(player2);
     }
 
+    /**
+     * The main loop of the game. It updates the score display, checks for collisions and out-of-bounds conditions,
+     * handles player input, and updates the positions of the ball and paddles accordingly.
+     * */
     @Override
     public void act() {
         // Display text and repaint the canva
