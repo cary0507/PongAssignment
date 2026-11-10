@@ -71,10 +71,20 @@ public class Ball extends GameObject {
 
     /**
      * Override the paint method to draw the ball as a filled circle
+     * Referencing examples from Google Classroom
      * */
     @Override
     public void paint(Graphics g) {
         g.setColor(this.c);
-        g.fillOval(getX(), getY(), getWidth(), getHeight());
+        g.fillRoundRect(0, 0, getWidth(), getHeight(), getWidth(), getHeight());
     }
+
+//    /**
+//     * Override the setColor method to set the color of the ball
+//     * Referencing examples from Google Classroom
+//     * */
+//    @Override
+//    public void setColor(Color c) {
+//        this.c = c;
+//    }
 }
