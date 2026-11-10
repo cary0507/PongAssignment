@@ -6,10 +6,14 @@
 
 package csta.ibm.pong;  // This can access package-private classes like _WinDialog
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 /**
  * The main class for the Pong game. It extends the Game class and implements the game logic, including player controls,
@@ -42,6 +46,33 @@ public class Pong extends Game {
      * */
     private static int pivotOffset(int pivot, int size) {
         return pivot - size / 2;
+    }
+
+    /**
+     * Used to create a sound file from Google Classroom example
+     */
+    public static void playSound(String fileName) throws MalformedURLException, LineUnavailableException,
+            UnsupportedAudioFileException, IOException {
+        File url = new File(fileName);
+        Clip clip = AudioSystem.getClip();
+
+        AudioInputStream ais = AudioSystem.
+                getAudioInputStream( url );
+        clip.open(ais);
+        clip.start();
+    }
+
+    /**
+     * Method to play sound effect from Google Classroom example
+     */
+    public static void bounceSound(){
+        try {
+            playSound("bounce.wav");
+        } catch (LineUnavailableException | UnsupportedAudioFileException
+                 | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**

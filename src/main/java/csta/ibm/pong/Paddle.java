@@ -4,6 +4,10 @@
 
 package csta.ibm.pong;
 
+/**
+ * The Paddle class of the Pong game. It extends the GameObject class and represents a player's paddle,
+ * handling its movement and speed.
+ * */
 public class Paddle extends GameObject {
     // Separate ySpeed and dy so that when the ball hits the paddle, know the magnitude for paddle's current y change
     private int ySpeed;
@@ -46,6 +50,10 @@ public class Paddle extends GameObject {
         dy = 0;
     }
 
+    /**
+     * Update the paddle's position based on its current vertical velocity.
+     * This method is called during each game tick to move the paddle up or down.
+     * */
     @Override
     public void act() {
         int newY = getY() + dy;
