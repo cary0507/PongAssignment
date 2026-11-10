@@ -1,5 +1,5 @@
 /*
-* Author: Cary
+* The Ball class
 * */
 
 package csta.ibm.pong;
@@ -9,6 +9,9 @@ import java.awt.*;
 /**
  * A class representing the ball in the Pong game. It extends the GameObject class and handles the ball's movement,
  * velocity, and collision behavior with paddles and walls.
+ *
+ * @author Cary
+ * @since 2026-10-28
  * */
 public class Ball extends GameObject {
     private int dx;

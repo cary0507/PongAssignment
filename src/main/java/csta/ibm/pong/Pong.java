@@ -18,11 +18,15 @@ import java.net.MalformedURLException;
 /**
  * The main class for the Pong game. It extends the Game class and implements the game logic, including player controls,
  * ball movement, collision detection, and score tracking.
+ *
+ * @author Cary
+ * @since 2026-10-28
  * */
 public class Pong extends Game {
-    /* Have to initialize objects outside of setup because setup will be also used as a reset method for now
-    * If initialize inside setup, everytime the game reset it will create new objects.
-    * */
+    // FilePaths
+    private static final String BOUNCE_SOUND_FILE = "bounce.wav";
+
+    // Game objects
     private Ball ball;
     private Paddle player1;  // Left paddle
     private Paddle player2;  // Right paddle
@@ -35,6 +39,8 @@ public class Pong extends Game {
     private final int WIN_SCORE = 3;
     private int p1Score = 0;
     private int p2Score = 0;
+
+    private boolean gamePaused = false;  // Track if the game is paused
 
     public Pong() {
         super();
@@ -67,7 +73,7 @@ public class Pong extends Game {
      */
     public static void bounceSound(){
         try {
-            playSound("bounce.wav");
+            playSound(BOUNCE_SOUND_FILE);
         } catch (LineUnavailableException | UnsupportedAudioFileException
                  | IOException e) {
             // TODO Auto-generated catch block
@@ -176,6 +182,7 @@ public class Pong extends Game {
         // Top & bottom bounds
         if (ball.getY() <= 0 || ball.getY() + ball.getHeight() >= getFieldHeight()) {
             ball.bounceY();
+            bounceSound();
         }
         // Out of left bound: player 2 gets score
         if (ball.getX() <= 0) {
@@ -201,9 +208,11 @@ public class Pong extends Game {
         // Ball colliding with paddle
         if (ball.collides(player1)) {
             ball.bouncePaddle(player1.getDY());
+            bounceSound();
         }
         if (ball.collides(player2)) {
             ball.bouncePaddle(player2.getDY());
+            bounceSound();
         }
 
         // Player 1 keypress

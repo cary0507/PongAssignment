@@ -1,5 +1,5 @@
 /*
-* Author: Cary
+* The paddle class
 * */
 
 package csta.ibm.pong;
@@ -7,6 +7,9 @@ package csta.ibm.pong;
 /**
  * The Paddle class of the Pong game. It extends the GameObject class and represents a player's paddle,
  * handling its movement and speed.
+ *
+ * @author Cary
+ * @since 2026-10-28
  * */
 public class Paddle extends GameObject {
     // Separate ySpeed and dy so that when the ball hits the paddle, know the magnitude for paddle's current y change
