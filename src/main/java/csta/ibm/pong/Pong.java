@@ -31,16 +31,15 @@ public class Pong extends Game {
     private Paddle player1;  // Left paddle
     private Paddle player2;  // Right paddle
     private JLabel scores;  // Display score
+    private JLabel readyMsg;
 
     private int CENTER_X;
     private int CENTER_Y;
 
-    // First player reaching 3 scores wins
-    private final int WIN_SCORE = 3;
+    // First player reaching this scores wins
+    private final int WIN_SCORE = 6;
     private int p1Score = 0;
     private int p2Score = 0;
-
-    private boolean gamePaused = false;  // Track if the game is paused
 
     public Pong() {
         super();
@@ -83,6 +82,7 @@ public class Pong extends Game {
 
     /**
      * Reset the ball to the center of the screen, and reset the paddles to the edges of the screen
+     * Paused the game for 3 seconds for the players to be ready
      * */
     public void resetPosition() {
         // Ball setup
@@ -171,19 +171,33 @@ public class Pong extends Game {
     }
 
     /**
-     * The main loop of the game. It updates the score display, checks for collisions and out-of-bounds conditions,
-     * handles player input, and updates the positions of the ball and paddles accordingly.
+     * Check the collision of ball object with other game objects such as the paddle
      * */
-    @Override
-    public void act() {
-        // Display text and repaint the canva
-        scores.setText("Player 1   " + p1Score + " | " + p2Score + "   Player 2");
-        repaint();
+    public void ballCollide() {
         // Top & bottom bounds
         if (ball.getY() <= 0 || ball.getY() + ball.getHeight() >= getFieldHeight()) {
             ball.bounceY();
             bounceSound();
         }
+
+        // Ball colliding with paddle
+        if (ball.collides(player1)) {
+            ball.bouncePaddle(player1.getDY());
+            // Wrap the ball outside the paddle
+            ball.setX(player1.getX() + player1.getWidth());
+            bounceSound();
+        }
+        if (ball.collides(player2)) {
+            ball.bouncePaddle(player2.getDY());
+            ball.setX(player2.getX() - player2.getWidth());
+            bounceSound();
+        }
+    }
+
+    /**
+     * Check for scoring and wining conditions
+     * */
+    public void checkWin() {
         // Out of left bound: player 2 gets score
         if (ball.getX() <= 0) {
             p2Score++;
@@ -204,17 +218,12 @@ public class Pong extends Game {
             stopGame();
             p2Wins();
         }
+    }
 
-        // Ball colliding with paddle
-        if (ball.collides(player1)) {
-            ball.bouncePaddle(player1.getDY());
-            bounceSound();
-        }
-        if (ball.collides(player2)) {
-            ball.bouncePaddle(player2.getDY());
-            bounceSound();
-        }
-
+    /**
+     * Check keypress for both players to move each paddle accordingly
+     * */
+    public void checkKeypress() {
         // Player 1 keypress
         if (ZKeyPressed()) {
             if (player1.getY() <= 0) {  // Stop moving and restrain to the top of the screen
@@ -251,6 +260,20 @@ public class Pong extends Game {
         } else {
             player2.atRest();
         }
+    }
+
+    /**
+     * The main loop of the game. It updates the score display, checks for collisions and out-of-bounds conditions,
+     * handles player input, and updates the positions of the ball and paddles accordingly.
+     * */
+    @Override
+    public void act() {
+        // Display text and repaint the canva
+        scores.setText("Player 1   " + p1Score + " | " + p2Score + "   Player 2");
+        repaint();
+        checkKeypress();
+        ballCollide();
+        checkWin();
     }
 
     public static void main(String[] args) {
