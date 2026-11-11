@@ -12,11 +12,6 @@ import java.awt.*;
  *
  * @author Cary
  * @since 2026-10-28
- * A class representing the ball in the <code>Pong</code> game. It extends the <code>GameObject</code> class and
- * handles the ball's movement, velocity <code>dx</code> <code>dy</code>, and collision behavior with paddles and walls.
- * The ball's velocity is affected by the motion of paddles,
- * it will speed up towards the paddle's direction. However, the speed increased each time will decay when the speed
- * is approaching to the max vertical velocity <code>dy</code>
  * */
 public class Ball extends GameObject {
     private int dx;
