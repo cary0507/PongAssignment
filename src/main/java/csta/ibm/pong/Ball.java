@@ -7,13 +7,17 @@ package csta.ibm.pong;
 import java.awt.*;
 
 /**
- * A class representing the ball in the Pong game. It extends the GameObject class and handles the ball's movement,
- * velocity, and collision behavior with paddles and walls.
+ * A class representing the ball in the <code>Pong</code> game. It extends the <code>GameObject</code> class and
+ * handles the ball's movement, velocity <code>dx</code> <code>dy</code>, and collision behavior with paddles and walls.
+ * The ball's velocity is affected by the motion of paddles,
+ * it will speed up towards the paddle's direction. However, the speed increased each time will decay when the speed
+ * is approaching to the max vertical velocity <code>dy</code>
  * */
 public class Ball extends GameObject {
     private int dx;
     private int dy;
-    private int maxDy;
+    private final int MAX_DY = 8;
+    private final double FRICTION = 0.2;
 
     /**
      * Set the default horizontal and vertical velocity of the ball
@@ -23,7 +27,6 @@ public class Ball extends GameObject {
     public void setVelocity(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
-        maxDy = 4;
     }
 
     /**
@@ -40,12 +43,17 @@ public class Ball extends GameObject {
         int dotProduct = dy * paddleDY;
         if (dotProduct > 0) {
             // If the ball and paddle are moving in the same direction, increase the ball's vertical velocity
-            int limitedDy = Math.min(Math.abs(dy) + Math.abs(paddleDY), maxDy);
-            dy = (dy > 0) ? limitedDy : -limitedDy;
+            int resultant = Math.abs(dy) + Math.abs(paddleDY);
+            int newDy = Math.min(MAX_DY, resultant);
+            int direction = paddleDY / Math.abs(paddleDY);  // Direction of unit vectors
+            dy = direction * newDy;
+        } else if (dotProduct == 0) {
+            // One of ball or paddle are not moving
+            dy += paddleDY;
         } else {
             // If the ball and paddle are moving in opposite directions, set the ball's vertical velocity to the
             // paddle's vertical velocity
-            dy = paddleDY;
+            dy = (int) (paddleDY * (1 - FRICTION));
         }
     }
 
@@ -67,14 +75,5 @@ public class Ball extends GameObject {
         // Move it to the next position
         setX(nexX);
         setY(nexY);
-    }
-
-    /**
-     * Override the paint method to draw the ball as a filled circle
-     * */
-    @Override
-    public void paint(Graphics g) {
-        g.setColor(this.c);
-        g.fillOval(getX(), getY(), getWidth(), getHeight());
     }
 }

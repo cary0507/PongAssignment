@@ -177,15 +177,17 @@ public class Pong extends Game {
 
         // Player 1 keypress
         if (ZKeyPressed()) {
-            if (player1.getY() < 0) {  // Stop moving and restrain to the top of the screen
+            if (player1.getY() <= 0) {  // Stop moving and restrain to the top of the screen
                 player1.setY(0);
+                player1.atRest();  // Stop moving
             } else {
                 player1.moveUp();
             }
         } else if (XKeyPressed()) {
-            if (player1.getY() + player1.getHeight() > getFieldHeight()) {  // Restrain to the bottom
+            if (player1.getY() + player1.getHeight() >= getFieldHeight()) {  // Restrain to the bottom
                 player1.setY(getFieldHeight() - player1.getHeight());
-            } else  {
+                player1.atRest();
+            } else {
                 player1.moveDown();
             }
         } else {  // None of z or x key is pressed
@@ -193,14 +195,16 @@ public class Pong extends Game {
         }
         // Player 2 keypress
         if (NKeyPressed()) {
-            if (player2.getY() < 0) {
+            if (player2.getY() <= 0) {
                 player2.setY(0);
+                player2.atRest();
             } else {
                 player2.moveUp();
             }
         } else if (MKeyPressed()) {
-            if (player2.getY() + player2.getHeight() > getFieldHeight()) {
+            if (player2.getY() + player2.getHeight() >= getFieldHeight()) {
                 player2.setY(getFieldHeight() - player2.getHeight());
+                player2.atRest();
             } else   {
                 player2.moveDown();
             }
