@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 /**
  * The main class for the Pong game. It extends the Game class and implements the game logic, including player controls,
@@ -28,6 +29,8 @@ public class Pong extends Game {
 
     // Game objects
     private Ball ball;
+    // Ball phantoms that only bounce to paddles once, they are slower than normal balls
+    private ArrayList<Ball> ballPhantoms;
     private Paddle player1;  // Left paddle
     private Paddle player2;  // Right paddle
     private JLabel scores;  // Display score
@@ -171,9 +174,26 @@ public class Pong extends Game {
     }
 
     /**
+     * Check the collision of ball phantoms
+     * */
+    private void phantomCollision() {
+        for (Ball phantom : ballPhantoms) {
+            // Top & bottom bounds
+            if (phantom.getY() <= 0 || phantom.getY() + phantom.getHeight() >= getFieldHeight()) {
+                phantom.bounceY();
+                bounceSound();
+            }
+            // Disappear after hitting the paddles
+            if (phantom.collides(player1) || phantom.collides(player2)) {
+                ballPhantoms.remove(phantom);
+            }
+        }
+    }
+
+    /**
      * Check the collision of ball object with other game objects such as the paddle
      * */
-    public void ballCollide() {
+    private void ballCollide() {
         // Top & bottom bounds
         if (ball.getY() <= 0 || ball.getY() + ball.getHeight() >= getFieldHeight()) {
             ball.bounceY();
@@ -197,7 +217,7 @@ public class Pong extends Game {
     /**
      * Check for scoring and wining conditions
      * */
-    public void checkWin() {
+    private void checkWin() {
         // Out of left bound: player 2 gets score
         if (ball.getX() <= 0) {
             p2Score++;
@@ -223,7 +243,7 @@ public class Pong extends Game {
     /**
      * Check keypress for both players to move each paddle accordingly
      * */
-    public void checkKeypress() {
+    private void checkKeypress() {
         // Player 1 keypress
         if (ZKeyPressed()) {
             if (player1.getY() <= 0) {  // Stop moving and restrain to the top of the screen
