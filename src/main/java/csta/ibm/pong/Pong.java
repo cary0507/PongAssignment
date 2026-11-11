@@ -6,19 +6,27 @@
 
 package csta.ibm.pong;  // This can access package-private classes like _WinDialog
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 /**
  * The main class for the Pong game. It extends the Game class and implements the game logic, including player controls,
  * ball movement, collision detection, and score tracking.
+ *
+ * @author Cary
+ * @since 2026-10-28
  * */
 public class Pong extends Game {
-    /* Have to initialize objects outside of setup because setup will be also used as a reset method for now
-    * If initialize inside setup, everytime the game reset it will create new objects.
-    * */
+    // FilePaths
+    private static final String BOUNCE_SOUND_FILE = "bounce.wav";
+
+    // Game objects
     private Ball ball;
     private Paddle player1;  // Left paddle
     private Paddle player2;  // Right paddle
@@ -32,6 +40,8 @@ public class Pong extends Game {
     private int p1Score = 0;
     private int p2Score = 0;
 
+    private boolean gamePaused = false;  // Track if the game is paused
+
     public Pong() {
         super();
         super.setResizable(false);  // Disable resizing
@@ -42,6 +52,33 @@ public class Pong extends Game {
      * */
     private static int pivotOffset(int pivot, int size) {
         return pivot - size / 2;
+    }
+
+    /**
+     * Used to create a sound file from Google Classroom example
+     */
+    public static void playSound(String fileName) throws MalformedURLException, LineUnavailableException,
+            UnsupportedAudioFileException, IOException {
+        File url = new File(fileName);
+        Clip clip = AudioSystem.getClip();
+
+        AudioInputStream ais = AudioSystem.
+                getAudioInputStream( url );
+        clip.open(ais);
+        clip.start();
+    }
+
+    /**
+     * Method to play sound effect from Google Classroom example
+     */
+    public static void bounceSound(){
+        try {
+            playSound(BOUNCE_SOUND_FILE);
+        } catch (LineUnavailableException | UnsupportedAudioFileException
+                 | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -145,6 +182,7 @@ public class Pong extends Game {
         // Top & bottom bounds
         if (ball.getY() <= 0 || ball.getY() + ball.getHeight() >= getFieldHeight()) {
             ball.bounceY();
+            bounceSound();
         }
         // Out of left bound: player 2 gets score
         if (ball.getX() <= 0) {
@@ -170,9 +208,11 @@ public class Pong extends Game {
         // Ball colliding with paddle
         if (ball.collides(player1)) {
             ball.bouncePaddle(player1.getDY());
+            bounceSound();
         }
         if (ball.collides(player2)) {
             ball.bouncePaddle(player2.getDY());
+            bounceSound();
         }
 
         // Player 1 keypress

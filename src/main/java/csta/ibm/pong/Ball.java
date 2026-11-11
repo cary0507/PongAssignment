@@ -7,6 +7,11 @@ package csta.ibm.pong;
 import java.awt.*;
 
 /**
+ * A class representing the ball in the Pong game. It extends the GameObject class and handles the ball's movement,
+ * velocity, and collision behavior with paddles and walls.
+ *
+ * @author Cary
+ * @since 2026-10-28
  * A class representing the ball in the <code>Pong</code> game. It extends the <code>GameObject</code> class and
  * handles the ball's movement, velocity <code>dx</code> <code>dy</code>, and collision behavior with paddles and walls.
  * The ball's velocity is affected by the motion of paddles,
@@ -16,8 +21,7 @@ import java.awt.*;
 public class Ball extends GameObject {
     private int dx;
     private int dy;
-    private final int MAX_DY = 8;
-    private final double FRICTION = 0.2;
+    private int maxDy;
 
     /**
      * Set the default horizontal and vertical velocity of the ball
@@ -27,6 +31,7 @@ public class Ball extends GameObject {
     public void setVelocity(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
+        maxDy = 4;
     }
 
     /**
@@ -43,17 +48,12 @@ public class Ball extends GameObject {
         int dotProduct = dy * paddleDY;
         if (dotProduct > 0) {
             // If the ball and paddle are moving in the same direction, increase the ball's vertical velocity
-            int resultant = Math.abs(dy) + Math.abs(paddleDY);
-            int newDy = Math.min(MAX_DY, resultant);
-            int direction = paddleDY / Math.abs(paddleDY);  // Direction of unit vectors
-            dy = direction * newDy;
-        } else if (dotProduct == 0) {
-            // One of ball or paddle are not moving
-            dy += paddleDY;
+            int limitedDy = Math.min(Math.abs(dy) + Math.abs(paddleDY), maxDy);
+            dy = (dy > 0) ? limitedDy : -limitedDy;
         } else {
             // If the ball and paddle are moving in opposite directions, set the ball's vertical velocity to the
             // paddle's vertical velocity
-            dy = (int) (paddleDY * (1 - FRICTION));
+            dy = paddleDY;
         }
     }
 
@@ -76,4 +76,23 @@ public class Ball extends GameObject {
         setX(nexX);
         setY(nexY);
     }
+
+    /**
+     * Override the paint method to draw the ball as a filled circle
+     * Referencing examples from Google Classroom
+     * */
+    @Override
+    public void paint(Graphics g) {
+        g.setColor(this.c);
+        g.fillRoundRect(0, 0, getWidth(), getHeight(), getWidth(), getHeight());
+    }
+
+//    /**
+//     * Override the setColor method to set the color of the ball
+//     * Referencing examples from Google Classroom
+//     * */
+//    @Override
+//    public void setColor(Color c) {
+//        this.c = c;
+//    }
 }
