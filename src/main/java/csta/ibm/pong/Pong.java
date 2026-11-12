@@ -17,8 +17,9 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 /**
- * The main class for the Pong game. It extends the Game class and implements the game logic, including player controls,
- * ball movement, collision detection, and score tracking.
+ * <h1>Pong</h1>
+ * <p>The main class for the Pong game. It extends the Game class and implements the game logic, including player
+ * controls, ball movement, collision detection, and score tracking.</p>
  *
  * @author Cary
  * @since 2026-10-28
@@ -26,11 +27,12 @@ import java.util.ArrayList;
 public class Pong extends Game {
     // FilePaths
     private static final String BOUNCE_SOUND_FILE = "bounce.wav";
+    private static final String POWER_UP_IMG_FILE = "src/main/resources/power up1.png";
 
     // Game objects
     private Ball ball;
     // Ball phantoms that only bounce to paddles once, they are slower than normal balls
-    private ArrayList<Ball> ballPhantoms;
+    private ArrayList<Ball> ballPhantoms = new ArrayList<>();
     private Paddle player1;  // Left paddle
     private Paddle player2;  // Right paddle
     private JLabel scores;  // Display score
@@ -215,18 +217,21 @@ public class Pong extends Game {
     }
 
     /**
-     * Check for scoring and wining conditions
+     * Check for scoring and wining conditions with all types of balls
      * */
     private void checkWin() {
         // Out of left bound: player 2 gets score
-        if (ball.getX() <= 0) {
-            p2Score++;
-            resetPosition();  // Reset game board
-        }
-        // Out of right bound: player 1 gets score
-        if (ball.getX() + ball.getWidth() >= getFieldWidth()) {
-            p1Score++;
-            resetPosition();
+        for (Ball phantom : ballPhantoms) {  // Also check for phantom
+            if (ball.getX() <= 0 || phantom.getX() <= 0) {
+                p2Score++;
+                resetPosition();  // Reset game board
+            }
+            // Out of right bound: player 1 gets score
+            if (ball.getX() + ball.getWidth() >= getFieldWidth() ||
+            phantom.getX() + phantom.getWidth() >= getFieldWidth()) {
+                p1Score++;
+                resetPosition();
+            }
         }
 
         // Check if any player won
