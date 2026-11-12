@@ -30,6 +30,20 @@ public class Ball extends GameObject {
     }
 
     /**
+     * Get the horizontal velocity of the ball
+     * */
+    public int getDX() {
+        return dx;
+    }
+
+    /**
+     * Get the vertical velocity of the ball
+     * */
+    public int getDY() {
+        return dy;
+    }
+
+    /**
      * Bounce the ball off the paddle and adjust the vertical velocity based on the paddle's vertical velocity
      * If ball and paddle have the same direction for dy, the ball's dy will increase, otherwise it will set ball's
      * dy to the paddle's dy

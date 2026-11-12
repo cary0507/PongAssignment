@@ -26,8 +26,8 @@ import java.util.ArrayList;
  * */
 public class Pong extends Game {
     // FilePaths
-    private static final String BOUNCE_SOUND_FILE = "bounce.wav";
-    private static final String POWER_UP_IMG_FILE = "src/main/resources/power up1.png";
+    private static final String BOUNCE_SOUND_FILE = "/sfx/tung.wav";
+    private static final String POWER_UP_IMG_FILE = "/img/power up1.png";
 
     // Game objects
     private Ball ball;
@@ -60,14 +60,19 @@ public class Pong extends Game {
 
     /**
      * Used to create a sound file from Google Classroom example
+     * Used AI to help debug my file path issue, and it turns out the file path is wrong. I need to use getResource()
+     * to get the correct path.
      */
     public static void playSound(String fileName) throws MalformedURLException, LineUnavailableException,
             UnsupportedAudioFileException, IOException {
+        // System.out.println(Pong.class.getResource(fileName));
         File url = new File(fileName);
         Clip clip = AudioSystem.getClip();
 
-        AudioInputStream ais = AudioSystem.
-                getAudioInputStream( url );
+        // Uses the class's resource path instead of system path
+        AudioInputStream ais = AudioSystem.getAudioInputStream(
+                Pong.class.getResource(fileName)
+        );
         clip.open(ais);
         clip.start();
     }
@@ -176,6 +181,24 @@ public class Pong extends Game {
     }
 
     /**
+     * Add a ball phantom to the game. The phantom will bounce off the paddles once and then disappear.
+     * */
+    public void addBallPhantom(Ball triggerBall) {
+        Ball phantom = new Ball();
+        int ballRadius = 10;
+        int ballLeft = pivotOffset(CENTER_X, ballRadius);
+        int ballTop = pivotOffset(CENTER_Y, ballRadius);
+        phantom.setSize(ballRadius, ballRadius);
+        phantom.setX(ballLeft); phantom.setY(ballTop);
+        int phantomDx = (int) (triggerBall.getDX() * 0.6);  // Slower than the triggering ball
+        int phantomDy = -triggerBall.getDX();  // Opposite vertical direction of the triggering ball
+        phantom.setVelocity(-3, 0);  // Slower than normal ball
+        phantom.setColor(Color.GRAY);  // Different color to distinguish from normal ball
+        ballPhantoms.add(phantom);
+        add(phantom);
+    }
+
+    /**
      * Check the collision of ball phantoms
      * */
     private void phantomCollision() {
@@ -221,8 +244,8 @@ public class Pong extends Game {
      * */
     private void checkWin() {
         // Out of left bound: player 2 gets score
-        for (Ball phantom : ballPhantoms) {  // Also check for phantom
-            if (ball.getX() <= 0 || phantom.getX() <= 0) {
+        for (Ball phantom : ballPhantoms) {  // Check for phantoms
+            if (phantom.getX() <= 0) {
                 p2Score++;
                 resetPosition();  // Reset game board
             }
@@ -232,6 +255,15 @@ public class Pong extends Game {
                 p1Score++;
                 resetPosition();
             }
+        }
+        // Check for ball
+        if (ball.getX() <= 0) {
+            p2Score++;
+            resetPosition();
+        }
+        if (ball.getX() + ball.getWidth() >= getFieldWidth()) {
+            p1Score++;
+            resetPosition();
         }
 
         // Check if any player won
