@@ -25,8 +25,11 @@ import java.util.ArrayList;
  * @since 2026-10-28
  * */
 public class Pong extends Game {
-    // FilePaths
+    // SFX file paths
     private static final String BOUNCE_SOUND_FILE = "/sfx/tung.wav";
+    private static final String PHANTOM_DISAPPEAR_SOUND_FILE = "/sfx/sahur.wav";
+    private static final String POWER_UP_SOUND_FILE = "/sfx/tung sahur.wav";
+    // Image file paths
     private static final String POWER_UP_IMG_FILE = "/img/power up1.png";
 
     // Game objects
@@ -75,19 +78,6 @@ public class Pong extends Game {
         );
         clip.open(ais);
         clip.start();
-    }
-
-    /**
-     * Method to play sound effect from Google Classroom example
-     */
-    public static void bounceSound(){
-        try {
-            playSound(BOUNCE_SOUND_FILE);
-        } catch (LineUnavailableException | UnsupportedAudioFileException
-                 | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -168,7 +158,7 @@ public class Pong extends Game {
         scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
         scores.setHorizontalAlignment(SwingConstants.CENTER);
         // Initialize game objects
-        ball = new Ball();
+        ball = new Ball(BOUNCE_SOUND_FILE, BOUNCE_SOUND_FILE, PHANTOM_DISAPPEAR_SOUND_FILE);
         player1 = new Paddle();
         player2 = new Paddle();
         // Setup locations
@@ -184,7 +174,7 @@ public class Pong extends Game {
      * Add a ball phantom to the game. The phantom will bounce off the paddles once and then disappear.
      * */
     public void addBallPhantom(Ball triggerBall) {
-        Ball phantom = new Ball();
+        Ball phantom = new Ball(BOUNCE_SOUND_FILE, PHANTOM_DISAPPEAR_SOUND_FILE, PHANTOM_DISAPPEAR_SOUND_FILE);
         int ballRadius = 10;
         int ballLeft = pivotOffset(CENTER_X, ballRadius);
         int ballTop = pivotOffset(CENTER_Y, ballRadius);
@@ -206,7 +196,6 @@ public class Pong extends Game {
             // Top & bottom bounds
             if (phantom.getY() <= 0 || phantom.getY() + phantom.getHeight() >= getFieldHeight()) {
                 phantom.bounceY();
-                bounceSound();
             }
             // Disappear after hitting the paddles
             if (phantom.collides(player1) || phantom.collides(player2)) {

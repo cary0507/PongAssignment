@@ -14,10 +14,21 @@ import java.awt.*;
  * @since 2026-10-28
  * */
 public class Ball extends GameObject {
+    // SFX file path
+    public final String BOUNCE_SOUND;
+    public final String PADDLE_BOUNCE_SOUND;
+    public final String SCORE_SOUND;
     private int dx;
     private int dy;
     private final int MAX_DY = 8;
     private final double FRICTION = 0.2;
+
+    public Ball(String bounceSound, String paddleBounceSound, String scoreSound) {
+        super();
+        this.BOUNCE_SOUND = bounceSound;
+        this.PADDLE_BOUNCE_SOUND = paddleBounceSound;
+        this.SCORE_SOUND = scoreSound;
+    }
 
     /**
      * Set the default horizontal and vertical velocity of the ball
