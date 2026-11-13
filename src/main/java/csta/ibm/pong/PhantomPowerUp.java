@@ -29,6 +29,13 @@ public class PhantomPowerUp extends GameObject {
         setVisible(false);
     }
 
+    public void setPossibleZone(int lowX, int lowY, int highX, int highY) {
+        this.lowX = lowX;
+        this.lowY = lowY;
+        this.highX = highX;
+        this.highY = highY;
+    }
+
     /**
      * Setter method to set the image of the power up
      * @param img the buffered image

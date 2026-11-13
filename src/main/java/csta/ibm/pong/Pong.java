@@ -168,6 +168,14 @@ public class Pong extends Game {
         player2.setSize(paddleWidth, paddleHeight);
         player2.setX(rPaddleLeft); player2.setY(paddleTop);
         player2.setYSpeed(initialPaddleSpeed);
+        // Phantom power up possible locations
+        int lowerBoundX = getFieldWidth() / 4;
+        int upperBoundX = getFieldWidth() * 3 / 4;
+        int lowerBoundY = getFieldHeight() / 4;
+        int upperBoundY = getFieldHeight() * 3 / 4;
+        phantomPowerUp.setPossibleZone(
+                lowerBoundX, lowerBoundY, upperBoundX - lowerBoundX, upperBoundY - lowerBoundY
+        );
     }
 
     /**

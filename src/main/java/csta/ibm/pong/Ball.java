@@ -28,7 +28,8 @@ public class Ball extends GameObject {
     public void setVelocity(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
-        maxDy = dy * 2;  // Set the maximum vertical velocity to twice the initial vertical velocity
+        maxDy = (int) (Math.abs(dx) * 1.2 + 0.5);  // Set the maximum vertical velocity to 1.5x the initial horizontal
+        // velocity, then round the result
     }
 
     /**
@@ -53,6 +54,7 @@ public class Ball extends GameObject {
      * @param paddleDY the vertical velocity of the paddle
      * */
     public void bouncePaddle(int paddleDY) {
+        System.out.println(paddleDY);
         dx = -dx;
         // Dot product of the paddle's vertical velocity and the ball's vertical velocity to determine the new
         // vertical velocity's direction of the ball
@@ -60,6 +62,7 @@ public class Ball extends GameObject {
         if (dotProduct > 0) {
             // If the ball and paddle are moving in the same direction, increase the ball's vertical velocity
             int resultant = Math.abs(dy) + Math.abs(paddleDY);
+            resultant = (int) (resultant * (1 - FRICTION));  // Apply friction to the resultant velocity
             int newDy = Math.min(maxDy, resultant);
             int direction = paddleDY / Math.abs(paddleDY);  // Direction of unit vectors
             dy = direction * newDy;
