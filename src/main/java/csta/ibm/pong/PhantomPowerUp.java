@@ -34,7 +34,7 @@ public class PhantomPowerUp extends GameObject {
         this.lowY = lowY;
         this.highX = highX;
         this.highY = highY;
-        System.out.println("Power up possible zone set to: (" + lowX + ", " + lowY + ") to (" + highX + ", " + highY + ")");
+        // System.out.println("Power up possible zone set to: (" + lowX + ", " + lowY + ") to (" + highX + ", " + highY + ")");
     }
 
     /**
@@ -77,7 +77,8 @@ public class PhantomPowerUp extends GameObject {
     public void paint (Graphics g) {
         Graphics2D g2d = (Graphics2D) g;  // Type cast to g2d
         if (img == null) return;
-        g2d.drawImage(img, getX(), getY(), getWidth(), getHeight(), null);
+        g2d.setColor(Color.RED);
+        g2d.drawImage(img, 0, 0, getWidth(), getHeight(), null);
     }
 
     /**
@@ -95,8 +96,6 @@ public class PhantomPowerUp extends GameObject {
      * */
     @Override
     public void act() {
-        setX(10); setY(10);
-        setVisible(true);
         if (!isVisible()) {  // Trying to appear on the screen
             // (int) (Math.random() * (max - min + 1)) + min => (int) (Math.random() *  ̶(̶appearChance  ̶(̶-̶1̶)̶ ̶+̶ ̶1̶ ̶)̶) + 1
             int roll = (int) (Math.random() * appearChance) + 1;
@@ -104,7 +103,7 @@ public class PhantomPowerUp extends GameObject {
                 // Random location within a box
                 int newX = (int) (Math.random() * (highX - lowX + 1)) + lowX;
                 int newY = (int) (Math.random() * (highY - lowY + 1)) + lowY;
-                System.out.println("Power up appeared at: (" + newX + ", " + newY + ")");
+                // System.out.println("Power up appeared at: (" + newX + ", " + newY + ")");
                 setX(newX); setY(newY);
                 setVisible(true);  // Appear on the screen
             }

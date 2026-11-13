@@ -146,7 +146,7 @@ public class Pong extends Game {
      * */
     public void resetPosition() {
         // Ball setup
-        int ballRadius = 10 * (int) scaleFactor;  // Scale the ball size based on the window size
+        int ballRadius = (int) (10 * scaleFactor);  // Scale the ball size based on the window size
         int ballLeft = pivotOffset(CENTER_X, ballRadius);  // Pivot ball to the screen center
         int ballTop = pivotOffset(CENTER_Y, ballRadius);
         ball.setSize(ballRadius, ballRadius);
@@ -154,11 +154,11 @@ public class Pong extends Game {
         int scaledDx = (int) (-5 * scaleFactor);
         ball.setVelocity(scaledDx, 0);
         // Paddles setup
-        int initialPaddleSpeed = 5 * (int) scaleFactor;  // Scale the paddle speed based on the window size
-        int paddleWidth = 10 * (int) scaleFactor;
-        int paddleHeight = 100 * (int) scaleFactor;
+        int initialPaddleSpeed = (int) (5 * scaleFactor);  // Scale the paddle speed based on the window size
+        int paddleWidth = (int) (10 * scaleFactor);
+        int paddleHeight = (int) (100 * scaleFactor);
         int paddleTop = pivotOffset(CENTER_Y, paddleHeight);
-        int paddleXOffset = 20 * (int) scaleFactor;  // Distance away from screen bounds
+        int paddleXOffset = (int) (20 * scaleFactor);  // Distance away from screen bounds
         // Player 1
         player1.setSize(paddleWidth, paddleHeight);
         player1.setX(paddleXOffset); player1.setY(paddleTop);
@@ -174,7 +174,7 @@ public class Pong extends Game {
         int lowerBoundY = getFieldHeight() / 4;
         int upperBoundY = getFieldHeight() * 3 / 4;
         phantomPowerUp.setPossibleZone(
-                lowerBoundX, lowerBoundY, upperBoundX - lowerBoundX, upperBoundY - lowerBoundY
+                lowerBoundX, lowerBoundY, upperBoundX, upperBoundY
         );
     }
 
@@ -220,8 +220,8 @@ public class Pong extends Game {
         CENTER_Y = getFieldHeight() / 2;
         // Text setup
         scores = new JLabel();
-        int scoresWidth = 160 * (int) scaleFactor;
-        int scoresHeight = 50 * (int) scaleFactor;
+        int scoresWidth = (int) (160 * scaleFactor);
+        int scoresHeight = (int) (50 * scaleFactor);
         int scoreLeft = pivotOffset(CENTER_X, scoresWidth);
         scores.setForeground(Color.white);
         scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
@@ -240,7 +240,7 @@ public class Pong extends Game {
         phantomPowerUp = new PhantomPowerUp();
         BufferedImage phantomImg = pathToImage(POWER_UP_IMG_FILE);
         phantomPowerUp.setImg(phantomImg);  // Set the image for power up
-        int powerUpSize = 90 * (int) scaleFactor;  // Scale the power up size based on the window size
+        int powerUpSize = (int) (90 * scaleFactor);  // Scale the power up size based on the window size
         phantomPowerUp.setSize(powerUpSize, powerUpSize);  // Match size with image
         add(phantomPowerUp);
 
@@ -392,7 +392,7 @@ public class Pong extends Game {
         phantomCollision();
         // Winning conditions
         checkWin();
-        System.out.println(phantomPowerUp.getX() + " " + phantomPowerUp.getY());
+        // System.out.println(phantomPowerUp.getX() + " " + phantomPowerUp.getY());
     }
 
     public static void main(String[] args) {

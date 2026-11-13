@@ -89,11 +89,11 @@ public class Ball extends GameObject {
     @Override
     public void act() {
         // Get the next position
-        int nexX = getX() + dx;
-        int nexY = getY() + dy;
+        int newX = getX() + dx;
+        int newY = getY() + dy;
         // Move it to the next position
-        setX(nexX);
-        setY(nexY);
+        setX(newX);
+        setY(newY);
     }
 
     /**
