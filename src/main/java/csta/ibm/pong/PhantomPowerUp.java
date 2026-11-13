@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
  * */
 public class PhantomPowerUp extends GameObject {
     private BufferedImage img;
-    private int appearChance = 800;  // 1 in 800 chance every tick to make the power up appear
+    private int appearChance = 600;  // 1 in 800 chance every tick to make the power up appear
     private int lowX;
     private int lowY;
     private int highX;
@@ -34,7 +34,7 @@ public class PhantomPowerUp extends GameObject {
         this.lowY = lowY;
         this.highX = highX;
         this.highY = highY;
-        // System.out.println("Power up possible zone set to: (" + lowX + ", " + lowY + ") to (" + highX + ", " + highY + ")");
+        // System.out.println("Power up possible zone set to: (" + lowX + ", " + highX + ") to (" + lowY + ", " + highY + ")");
     }
 
     /**
@@ -52,7 +52,7 @@ public class PhantomPowerUp extends GameObject {
      *
      * @param triggerBall the ball who triggers this power up (Should be the main ball)
      * */
-    public Ball addBallPhantom(Ball triggerBall) {
+    public Ball spawnPhantom(Ball triggerBall) {
         Ball phantom = new Ball();
         // Same size as trigger ball
         phantom.setSize(triggerBall.getSize());

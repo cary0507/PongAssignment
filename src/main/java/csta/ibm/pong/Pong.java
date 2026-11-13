@@ -145,6 +145,14 @@ public class Pong extends Game {
      * positions of the ball and paddles, so it works for any screen size.
      * */
     public void resetPosition() {
+        // Text setup
+        int scoresWidth = (int) (300 * scaleFactor);
+        int scoresHeight = (int) (50 * scaleFactor);
+        int scoreLeft = pivotOffset(CENTER_X, scoresWidth);
+        int fontSize = (int) (16 * scaleFactor);
+        scores.setFont(new Font("Arial", Font.PLAIN, fontSize));
+        scores.setForeground(Color.white);
+        scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
         // Ball setup
         int ballRadius = (int) (10 * scaleFactor);  // Scale the ball size based on the window size
         int ballLeft = pivotOffset(CENTER_X, ballRadius);  // Pivot ball to the screen center
@@ -169,8 +177,8 @@ public class Pong extends Game {
         player2.setX(rPaddleLeft); player2.setY(paddleTop);
         player2.setYSpeed(initialPaddleSpeed);
         // Phantom power up possible locations
-        int lowerBoundX = getFieldWidth() / 4;
-        int upperBoundX = getFieldWidth() * 3 / 4;
+        int lowerBoundX = getFieldWidth() * 7 / 16;
+        int upperBoundX = getFieldWidth() * 9 / 16;
         int lowerBoundY = getFieldHeight() / 4;
         int upperBoundY = getFieldHeight() * 3 / 4;
         phantomPowerUp.setPossibleZone(
@@ -220,11 +228,6 @@ public class Pong extends Game {
         CENTER_Y = getFieldHeight() / 2;
         // Text setup
         scores = new JLabel();
-        int scoresWidth = (int) (160 * scaleFactor);
-        int scoresHeight = (int) (50 * scaleFactor);
-        int scoreLeft = pivotOffset(CENTER_X, scoresWidth);
-        scores.setForeground(Color.white);
-        scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
         scores.setHorizontalAlignment(SwingConstants.CENTER);
         add(scores);  // Add to board
 
@@ -240,12 +243,25 @@ public class Pong extends Game {
         phantomPowerUp = new PhantomPowerUp();
         BufferedImage phantomImg = pathToImage(POWER_UP_IMG_FILE);
         phantomPowerUp.setImg(phantomImg);  // Set the image for power up
-        int powerUpSize = (int) (90 * scaleFactor);  // Scale the power up size based on the window size
+        int powerUpSize = (int) (64 * scaleFactor);  // Scale the power up size based on the window size
         phantomPowerUp.setSize(powerUpSize, powerUpSize);  // Match size with image
         add(phantomPowerUp);
 
         // Setup locations
         resetPosition();
+    }
+
+    /**
+     * Check the collision of the ball with the phantom power up. If the ball collides with the power up, a phantom ball
+     * is spawned, and the power up disappears. The phantom ball will have the same size as the main ball, but will move
+     * slower and will disappear after hitting a paddle once. The power up will reappear after a random interval.
+     * */
+    private void powerUpCollision() {
+        if (phantomPowerUp.collides(ball)) {
+            Ball phantom = phantomPowerUp.spawnPhantom(ball);
+            ballPhantoms.add(phantom);
+            add(phantom);  // Add the phantom to the game
+        }
     }
 
     /**
@@ -268,9 +284,12 @@ public class Pong extends Game {
     }
 
     /**
-     * Check the collision of ball object with other game objects such as the paddle
+     * Check the collision of ball object with other game objects such as the paddle that make the ball bounce back. If
+     * the ball collides with the top or bottom bounds, it will bounce back. If the ball collides with a paddle, it will
+     * bounce back and adjust its vertical velocity based on the paddle's vertical velocity. The ball will also play a
+     * bounce sound effect when it collides with a paddle or the top/bottom bounds.
      * */
-    private void ballCollide() {
+    private void ballBounce() {
         // Top & bottom bounds
         if (ball.getY() <= 0 || ball.getY() + ball.getHeight() >= getFieldHeight()) {
             ball.bounceY();
@@ -388,7 +407,8 @@ public class Pong extends Game {
         repaint();
         checkKeypress();
         // Collisions
-        ballCollide();
+        powerUpCollision();
+        ballBounce();
         phantomCollision();
         // Winning conditions
         checkWin();
