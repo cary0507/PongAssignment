@@ -176,6 +176,8 @@ public class Pong extends Game {
         player2.setSize(paddleWidth, paddleHeight);
         player2.setX(rPaddleLeft); player2.setY(paddleTop);
         player2.setYSpeed(initialPaddleSpeed);
+        // Phantom array lists
+        resetBallPhantoms();
         // Phantom power up possible locations
         int lowerBoundX = getFieldWidth() * 7 / 16;
         int upperBoundX = getFieldWidth() * 9 / 16;
@@ -252,6 +254,17 @@ public class Pong extends Game {
     }
 
     /**
+     * Reset the ball phantoms by removing them from the game and clearing the list. This is called when a player scores
+     * to ensure that any existing phantom balls are removed from the game before the next round starts
+     * */
+    private void resetBallPhantoms() {
+        for (Ball phantom : ballPhantoms) {
+            remove(phantom);  // Remove from the game
+        }
+        ballPhantoms.clear();  // Clear the list
+    }
+
+    /**
      * Check the collision of the ball with the phantom power up. If the ball collides with the power up, a phantom ball
      * is spawned, and the power up disappears. The phantom ball will have the same size as the main ball, but will move
      * slower and will disappear after hitting a paddle once. The power up will reappear after a random interval.
@@ -268,7 +281,9 @@ public class Pong extends Game {
      * Check the collision of phantoms
      * */
     private void phantomCollision() {
-        for (Ball phantom : ballPhantoms) {
+        for (int i = ballPhantoms.size() - 1; i >= 0; i--) {  // Reverse loop to avoid ConcurrentModificationException
+            // when removing phantoms
+            Ball phantom = ballPhantoms.get(i);
             // Top & bottom bounds
             if (phantom.getY() <= 0 || phantom.getY() + phantom.getHeight() >= getFieldHeight()) {
                 phantom.bounceY();
@@ -315,7 +330,8 @@ public class Pong extends Game {
      * */
     private void checkWin() {
         // Out of left bound: player 2 gets score
-        for (Ball phantom : ballPhantoms) {  // Check for phantoms
+        for (int i = ballPhantoms.size() -1; i >= 0; i--) {  // Check for phantoms
+            Ball phantom = ballPhantoms.get(i);
             if (phantom.getX() <= 0) {
                 p2Score++;
                 resetPosition();  // Reset game board
