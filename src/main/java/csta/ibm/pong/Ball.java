@@ -16,8 +16,9 @@ import java.awt.*;
 public class Ball extends GameObject {
     private int dx;
     private int dy;
-    private final int MAX_DY = 8;
-    private final double FRICTION = 0.2;
+    private int maxDy;
+    private final double FRICTION = 0.1;  // Friction coefficient to reduce the ball's vertical velocity when bouncing
+    // off the paddle with opposite direction
 
     /**
      * Set the default horizontal and vertical velocity of the ball
@@ -27,6 +28,7 @@ public class Ball extends GameObject {
     public void setVelocity(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
+        maxDy = dy * 2;  // Set the maximum vertical velocity to twice the initial vertical velocity
     }
 
     /**
@@ -58,7 +60,7 @@ public class Ball extends GameObject {
         if (dotProduct > 0) {
             // If the ball and paddle are moving in the same direction, increase the ball's vertical velocity
             int resultant = Math.abs(dy) + Math.abs(paddleDY);
-            int newDy = Math.min(MAX_DY, resultant);
+            int newDy = Math.min(maxDy, resultant);
             int direction = paddleDY / Math.abs(paddleDY);  // Direction of unit vectors
             dy = direction * newDy;
         } else if (dotProduct == 0) {

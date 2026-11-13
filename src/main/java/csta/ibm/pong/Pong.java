@@ -47,6 +47,10 @@ public class Pong extends Game {
     private JLabel scores;  // Display score
     private JLabel readyMsg;
 
+    // Base resolution for the game
+    private final int RES_WIDTH = 600;
+    private final int RES_HEIGHT = 420;
+    private double scaleFactor = 1.0;  // Scale factor for the game objects based on the window size
     private int CENTER_X;
     private int CENTER_Y;
 
@@ -65,6 +69,18 @@ public class Pong extends Game {
      * */
     private static int pivotOffset(int pivot, int size) {
         return pivot - size / 2;
+    }
+
+    /**
+     * Calculate the scale factor based on the current window size and the base resolution. The scale factor is used to
+     * scale the size and speed of game objects to maintain consistent gameplay across different window sizes.
+     * The scale factor is the minimum of the width scale and height scale, ensuring that the game objects fit within
+     * the window without distortion.
+     * */
+    private double calculateScaleFactor() {
+        double widthScale = (double) getFieldWidth() / RES_WIDTH;
+        double heightScale = (double) getFieldHeight() / RES_HEIGHT;
+        return Math.min(widthScale, heightScale);
     }
 
     /**
@@ -125,22 +141,24 @@ public class Pong extends Game {
 
     /**
      * Reset the ball to the center of the screen, and reset the paddles to the edges of the screen
-     * Paused the game for 3 seconds for the players to be ready
+     * Paused the game for 3 seconds for the players to be ready. Uses proportions of the screen size to set the
+     * positions of the ball and paddles, so it works for any screen size.
      * */
     public void resetPosition() {
         // Ball setup
-        int ballRadius = 10;
+        int ballRadius = 10 * (int) scaleFactor;  // Scale the ball size based on the window size
         int ballLeft = pivotOffset(CENTER_X, ballRadius);  // Pivot ball to the screen center
         int ballTop = pivotOffset(CENTER_Y, ballRadius);
         ball.setSize(ballRadius, ballRadius);
         ball.setX(ballLeft); ball.setY(ballTop);
-        ball.setVelocity(-5, 0);
+        int scaledDx = (int) (-5 * scaleFactor);
+        ball.setVelocity(scaledDx, 0);
         // Paddles setup
-        int initialPaddleSpeed = 5;
-        int paddleWidth = 10;
-        int paddleHeight = 100;
+        int initialPaddleSpeed = 5 * (int) scaleFactor;  // Scale the paddle speed based on the window size
+        int paddleWidth = 10 * (int) scaleFactor;
+        int paddleHeight = 100 * (int) scaleFactor;
         int paddleTop = pivotOffset(CENTER_Y, paddleHeight);
-        int paddleXOffset = 20;  // Distance away from screen bounds
+        int paddleXOffset = 20 * (int) scaleFactor;  // Distance away from screen bounds
         // Player 1
         player1.setSize(paddleWidth, paddleHeight);
         player1.setX(paddleXOffset); player1.setY(paddleTop);
@@ -189,12 +207,13 @@ public class Pong extends Game {
     @Override
     public void setup() {
         setDelay(10);
+        scaleFactor = calculateScaleFactor();
         CENTER_X = getFieldWidth() / 2;
         CENTER_Y = getFieldHeight() / 2;
         // Text setup
         scores = new JLabel();
-        int scoresWidth = 160;
-        int scoresHeight = 50;
+        int scoresWidth = 160 * (int) scaleFactor;
+        int scoresHeight = 50 * (int) scaleFactor;
         int scoreLeft = pivotOffset(CENTER_X, scoresWidth);
         scores.setForeground(Color.white);
         scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
@@ -213,7 +232,8 @@ public class Pong extends Game {
         phantomPowerUp = new PhantomPowerUp();
         BufferedImage phantomImg = pathToImage(POWER_UP_IMG_FILE);
         phantomPowerUp.setImg(phantomImg);  // Set the image for power up
-        phantomPowerUp.setSize(phantomImg.getWidth(), phantomImg.getHeight());  // Match size with image
+        int powerUpSize = 90 * (int) scaleFactor;  // Scale the power up size based on the window size
+        phantomPowerUp.setSize(powerUpSize, powerUpSize);  // Match size with image
         add(phantomPowerUp);
 
         // Setup locations
