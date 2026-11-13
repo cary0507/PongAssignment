@@ -34,6 +34,7 @@ public class PhantomPowerUp extends GameObject {
         this.lowY = lowY;
         this.highX = highX;
         this.highY = highY;
+        System.out.println("Power up possible zone set to: (" + lowX + ", " + lowY + ") to (" + highX + ", " + highY + ")");
     }
 
     /**
@@ -63,6 +64,8 @@ public class PhantomPowerUp extends GameObject {
         int phantomDy = -triggerBall.getDY();  // Opposite vertical direction of the triggering ball
         phantom.setVelocity(phantomDx, phantomDy);  // Slower than normal ball
         phantom.setColor(Color.GRAY);  // Different color to distinguish from normal ball
+        // Reset visibility of the power up after being triggered
+        setVisible(false);
         // Return the phantom to the caller
         return phantom;
     }
@@ -86,16 +89,23 @@ public class PhantomPowerUp extends GameObject {
         return (isVisible() && super.collides(o));
     }
 
+    /***
+     * Override the act method to make the power up appear randomly on the screen when it is not visible.
+     * The power up will appear at a random location within the specified zone
+     * */
     @Override
     public void act() {
+        setX(10); setY(10);
+        setVisible(true);
         if (!isVisible()) {  // Trying to appear on the screen
             // (int) (Math.random() * (max - min + 1)) + min => (int) (Math.random() *  ̶(̶appearChance  ̶(̶-̶1̶)̶ ̶+̶ ̶1̶ ̶)̶) + 1
             int roll = (int) (Math.random() * appearChance) + 1;
             if (roll == 1) {  // Successfully rolled
                 // Random location within a box
-                int nexX = (int) (Math.random() * (highX - lowX + 1)) + lowX;
-                int nexY = (int) (Math.random() * (highY - lowY + 1)) + lowY;
-                setX(nexX); setY(nexY);
+                int newX = (int) (Math.random() * (highX - lowX + 1)) + lowX;
+                int newY = (int) (Math.random() * (highY - lowY + 1)) + lowY;
+                System.out.println("Power up appeared at: (" + newX + ", " + newY + ")");
+                setX(newX); setY(newY);
                 setVisible(true);  // Appear on the screen
             }
         }

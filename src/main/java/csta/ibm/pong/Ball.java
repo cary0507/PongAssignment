@@ -54,7 +54,7 @@ public class Ball extends GameObject {
      * @param paddleDY the vertical velocity of the paddle
      * */
     public void bouncePaddle(int paddleDY) {
-        System.out.println(paddleDY);
+        // System.out.println(paddleDY);
         dx = -dx;
         // Dot product of the paddle's vertical velocity and the ball's vertical velocity to determine the new
         // vertical velocity's direction of the ball

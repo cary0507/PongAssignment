@@ -387,8 +387,12 @@ public class Pong extends Game {
         scores.setText("Player 1   " + p1Score + " | " + p2Score + "   Player 2");
         repaint();
         checkKeypress();
+        // Collisions
         ballCollide();
+        phantomCollision();
+        // Winning conditions
         checkWin();
+        System.out.println(phantomPowerUp.getX() + " " + phantomPowerUp.getY());
     }
 
     public static void main(String[] args) {
