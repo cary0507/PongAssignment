@@ -196,10 +196,12 @@ public class Pong extends Game {
             // Top & bottom bounds
             if (phantom.getY() <= 0 || phantom.getY() + phantom.getHeight() >= getFieldHeight()) {
                 phantom.bounceY();
+                phantom.playSound(BOUNCE_SOUND_FILE);
             }
             // Disappear after hitting the paddles
             if (phantom.collides(player1) || phantom.collides(player2)) {
                 ballPhantoms.remove(phantom);
+                phantom.playSound(PHANTOM_DISAPPEAR_SOUND_FILE);
             }
         }
     }
@@ -211,7 +213,7 @@ public class Pong extends Game {
         // Top & bottom bounds
         if (ball.getY() <= 0 || ball.getY() + ball.getHeight() >= getFieldHeight()) {
             ball.bounceY();
-            bounceSound();
+            ball.playSound(BOUNCE_SOUND_FILE);
         }
 
         // Ball colliding with paddle
@@ -219,12 +221,12 @@ public class Pong extends Game {
             ball.bouncePaddle(player1.getDY());
             // Wrap the ball outside the paddle
             ball.setX(player1.getX() + player1.getWidth());
-            bounceSound();
+            ball.playSound(BOUNCE_SOUND_FILE);
         }
         if (ball.collides(player2)) {
             ball.bouncePaddle(player2.getDY());
             ball.setX(player2.getX() - player2.getWidth());
-            bounceSound();
+            ball.playSound(BOUNCE_SOUND_FILE);
         }
     }
 

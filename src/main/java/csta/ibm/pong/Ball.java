@@ -7,13 +7,13 @@ package csta.ibm.pong;
 import java.awt.*;
 
 /**
- * A class representing the ball in the Pong game. It extends the GameObject class and handles the ball's movement,
- * velocity, and collision behavior with paddles and walls.
+ * <p>A class representing the ball in the Pong game. It extends the GameObject class and handles the ball's movement,
+ * velocity, and collision behavior with paddles and walls.</p>
  *
  * @author Cary
  * @since 2026-10-28
  * */
-public class Ball extends GameObject {
+public class Ball extends Audible {
     // SFX file path
     public final String BOUNCE_SOUND;
     public final String PADDLE_BOUNCE_SOUND;
