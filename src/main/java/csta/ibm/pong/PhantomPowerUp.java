@@ -29,6 +29,16 @@ public class PhantomPowerUp extends GameObject {
         setVisible(false);
     }
 
+   /**
+    * Setter method to set the possible zone for the power up to appear. The power up will appear at a random location
+    * within the specified zone when it is not visible. The zone is defined by the lowest and highest x and y
+    * coordinates.
+    *
+    * @param lowX the lowest x coordinate of the zone
+    * @param lowY the lowest y coordinate of the zone
+    * @param highX the highest x coordinate of the zone
+    * @param highY the highest y coordinate of the zone
+    * */
     public void setPossibleZone(int lowX, int lowY, int highX, int highY) {
         this.lowX = lowX;
         this.lowY = lowY;
@@ -78,6 +88,8 @@ public class PhantomPowerUp extends GameObject {
         Graphics2D g2d = (Graphics2D) g;  // Type cast to g2d
         if (img == null) return;
         g2d.setColor(Color.RED);
+        // x and y in this case is relative to the object itself, so we can just draw the image at (0, 0)
+        // and scale it to the size of the object
         g2d.drawImage(img, 0, 0, getWidth(), getHeight(), null);
     }
 

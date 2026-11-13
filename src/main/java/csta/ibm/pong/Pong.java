@@ -144,15 +144,24 @@ public class Pong extends Game {
      * Paused the game for 3 seconds for the players to be ready. Uses proportions of the screen size to set the
      * positions of the ball and paddles, so it works for any screen size.
      * */
-    public void resetPosition() {
+    public void reset() {
         // Text setup
+        int fontSize = (int) (16 * scaleFactor);
+
         int scoresWidth = (int) (300 * scaleFactor);
         int scoresHeight = (int) (50 * scaleFactor);
         int scoreLeft = pivotOffset(CENTER_X, scoresWidth);
-        int fontSize = (int) (16 * scaleFactor);
         scores.setFont(new Font("Arial", Font.PLAIN, fontSize));
         scores.setForeground(Color.white);
         scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
+
+        int readyWidth = (int) (200 * scaleFactor);
+        int readyHeight = (int) (50 * scaleFactor);
+        int readyLeft = pivotOffset(CENTER_X, readyWidth);
+        int readyTop = pivotOffset(CENTER_Y, readyHeight);
+        readyMsg.setFont(new Font("Arial", Font.BOLD, fontSize));
+        readyMsg.setForeground(Color.yellow);
+        readyMsg.setBounds(readyLeft, readyTop, readyWidth, readyHeight);
         // Ball setup
         int ballRadius = (int) (10 * scaleFactor);  // Scale the ball size based on the window size
         int ballLeft = pivotOffset(CENTER_X, ballRadius);  // Pivot ball to the screen center
@@ -232,6 +241,9 @@ public class Pong extends Game {
         scores = new JLabel();
         scores.setHorizontalAlignment(SwingConstants.CENTER);
         add(scores);  // Add to board
+        readyMsg = new JLabel("Get Ready!");
+        readyMsg.setHorizontalAlignment(SwingConstants.CENTER);
+        add(readyMsg);
 
         // Initialize game objects
         ball = new Ball();
@@ -250,7 +262,7 @@ public class Pong extends Game {
         add(phantomPowerUp);
 
         // Setup locations
-        resetPosition();
+        reset();
     }
 
     /**
@@ -334,26 +346,26 @@ public class Pong extends Game {
             Ball phantom = ballPhantoms.get(i);
             if (phantom.getX() <= 0) {
                 p2Score++;
-                resetPosition();  // Reset game board
+                reset();  // Reset game board
                 playSound(SCORING_SFX_FILE);
             }
             // Out of right bound: player 1 gets score
             if (ball.getX() + ball.getWidth() >= getFieldWidth() ||
             phantom.getX() + phantom.getWidth() >= getFieldWidth()) {
                 p1Score++;
-                resetPosition();
+                reset();
                 playSound(SCORING_SFX_FILE);
             }
         }
         // Check for ball
         if (ball.getX() <= 0) {
             p2Score++;
-            resetPosition();
+            reset();
             playSound(SCORING_SFX_FILE);
         }
         if (ball.getX() + ball.getWidth() >= getFieldWidth()) {
             p1Score++;
-            resetPosition();
+            reset();
             playSound(SCORING_SFX_FILE);
         }
 
