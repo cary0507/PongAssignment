@@ -5,6 +5,7 @@
 package csta.ibm.pong;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * <p>the PhantomPowerUp class represents the entities that spawns phantom balls when a normal ball collides with
@@ -14,6 +15,28 @@ import java.awt.*;
  * @since 2026-11-12
  * */
 public class PhantomPowerUp extends GameObject {
+    private BufferedImage img;
+    private int appearChance = 800;  // 1 in 800 chance every tick to make the power up appear
+    private int lowX;
+    private int lowY;
+    private int highX;
+    private int highY;
+
+    /**
+     * On default, the power  up is not visible
+     * */
+    public PhantomPowerUp() {
+        setVisible(false);
+    }
+
+    /**
+     * Setter method to set the image of the power up
+     * @param img the buffered image
+     * */
+    public void setImg(BufferedImage img) {
+        this.img = img;
+    }
+
     /**
      * Add a ball phantom to the game. The phantom will bounce off the paddles once and then disappear.
      * The phantom should have same attributes as the trigger ball except that phantom's dx is smaller than the ball's,
@@ -38,6 +61,16 @@ public class PhantomPowerUp extends GameObject {
     }
 
     /**
+     * Override the paint method from GameObject to draw the image instead of the shapes
+     * */
+    @Override
+    public void paint (Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;  // Type cast to g2d
+        if (img == null) return;
+        g2d.drawImage(img, getX(), getY(), getWidth(), getHeight(), null);
+    }
+
+    /**
      * Override the original collides so that it will only continue checking hitbox when the power up object is
      * visible
      * */
@@ -48,6 +81,16 @@ public class PhantomPowerUp extends GameObject {
 
     @Override
     public void act() {
-
+        if (!isVisible()) {  // Trying to appear on the screen
+            // (int) (Math.random() * (max - min + 1)) + min => (int) (Math.random() *  ̶(̶appearChance  ̶(̶-̶1̶)̶ ̶+̶ ̶1̶ ̶)̶) + 1
+            int roll = (int) (Math.random() * appearChance) + 1;
+            if (roll == 1) {  // Successfully rolled
+                // Random location within a box
+                int nexX = (int) (Math.random() * (highX - lowX + 1)) + lowX;
+                int nexY = (int) (Math.random() * (highY - lowY + 1)) + lowY;
+                setX(nexX); setY(nexY);
+                setVisible(true);  // Appear on the screen
+            }
+        }
     }
 }

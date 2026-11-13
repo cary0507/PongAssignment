@@ -199,19 +199,25 @@ public class Pong extends Game {
         scores.setForeground(Color.white);
         scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
         scores.setHorizontalAlignment(SwingConstants.CENTER);
+        add(scores);  // Add to board
+
         // Initialize game objects
         ball = new Ball();
+        add(ball);
+
         player1 = new Paddle();
+        add(player1);
         player2 = new Paddle();
+        add(player2);
+
         phantomPowerUp = new PhantomPowerUp();
+        BufferedImage phantomImg = pathToImage(POWER_UP_IMG_FILE);
+        phantomPowerUp.setImg(phantomImg);  // Set the image for power up
+        phantomPowerUp.setSize(phantomImg.getWidth(), phantomImg.getHeight());  // Match size with image
+        add(phantomPowerUp);
 
         // Setup locations
         resetPosition();
-        // Add to Pong
-        add(scores);
-        add(ball);
-        add(player1);
-        add(player2);
     }
 
     /**
@@ -359,7 +365,7 @@ public class Pong extends Game {
 
     public static void main(String[] args) {
         Pong p = new Pong();
-        p.resize(800, 600);
+        p.resize(1200, 840);
         p.setVisible(true);
         p.initComponents();
     }
