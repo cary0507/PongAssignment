@@ -13,7 +13,7 @@ import java.awt.*;
  * @author Cary
  * @since 2026-10-28
  * */
-public class Ball extends Audible {
+public class Ball extends GameObject {
     // SFX file path
     public final String BOUNCE_SOUND;
     public final String PADDLE_BOUNCE_SOUND;

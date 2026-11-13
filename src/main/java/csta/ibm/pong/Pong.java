@@ -28,7 +28,9 @@ public class Pong extends Game {
     // SFX file paths
     private static final String BOUNCE_SOUND_FILE = "/sfx/tung.wav";
     private static final String PHANTOM_DISAPPEAR_SOUND_FILE = "/sfx/sahur.wav";
-    private static final String POWER_UP_SOUND_FILE = "/sfx/tung sahur.wav";
+    private static final String POWER_UP_SFX_FILE = "/sfx/tung sahur.wav";
+    private static final String SCORING_SFX_FILE = "/sfx/scoring.wav";
+    private static final String GAME_OVER_SFX_FILE = "/sfx/game over.wav";
     // Image file paths
     private static final String POWER_UP_IMG_FILE = "/img/power up1.png";
 
@@ -65,8 +67,10 @@ public class Pong extends Game {
      * Used to create a sound file from Google Classroom example
      * Used AI to help debug my file path issue, and it turns out the file path is wrong. I need to use getResource()
      * to get the correct path.
+     *
+     * @param fileName the file path from the source root starting with a "/"
      */
-    public static void playSound(String fileName) throws MalformedURLException, LineUnavailableException,
+    public static void initSound(String fileName) throws MalformedURLException, LineUnavailableException,
             UnsupportedAudioFileException, IOException {
         // System.out.println(Pong.class.getResource(fileName));
         File url = new File(fileName);
@@ -78,6 +82,21 @@ public class Pong extends Game {
         );
         clip.open(ais);
         clip.start();
+    }
+
+    /**
+     * Method to play sound effect
+     *
+     * @param fileName the file path from the source root starting with a "/"
+     */
+    public void playSound(String fileName){
+        try {
+            initSound(fileName);
+        } catch (LineUnavailableException | UnsupportedAudioFileException
+                 | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -196,12 +215,12 @@ public class Pong extends Game {
             // Top & bottom bounds
             if (phantom.getY() <= 0 || phantom.getY() + phantom.getHeight() >= getFieldHeight()) {
                 phantom.bounceY();
-                phantom.playSound(BOUNCE_SOUND_FILE);
+                playSound(BOUNCE_SOUND_FILE);
             }
             // Disappear after hitting the paddles
             if (phantom.collides(player1) || phantom.collides(player2)) {
                 ballPhantoms.remove(phantom);
-                phantom.playSound(PHANTOM_DISAPPEAR_SOUND_FILE);
+                playSound(PHANTOM_DISAPPEAR_SOUND_FILE);
             }
         }
     }
@@ -213,7 +232,7 @@ public class Pong extends Game {
         // Top & bottom bounds
         if (ball.getY() <= 0 || ball.getY() + ball.getHeight() >= getFieldHeight()) {
             ball.bounceY();
-            ball.playSound(BOUNCE_SOUND_FILE);
+            playSound(BOUNCE_SOUND_FILE);
         }
 
         // Ball colliding with paddle
@@ -221,12 +240,12 @@ public class Pong extends Game {
             ball.bouncePaddle(player1.getDY());
             // Wrap the ball outside the paddle
             ball.setX(player1.getX() + player1.getWidth());
-            ball.playSound(BOUNCE_SOUND_FILE);
+            playSound(BOUNCE_SOUND_FILE);
         }
         if (ball.collides(player2)) {
             ball.bouncePaddle(player2.getDY());
             ball.setX(player2.getX() - player2.getWidth());
-            ball.playSound(BOUNCE_SOUND_FILE);
+            playSound(BOUNCE_SOUND_FILE);
         }
     }
 
@@ -239,32 +258,38 @@ public class Pong extends Game {
             if (phantom.getX() <= 0) {
                 p2Score++;
                 resetPosition();  // Reset game board
+                playSound(SCORING_SFX_FILE);
             }
             // Out of right bound: player 1 gets score
             if (ball.getX() + ball.getWidth() >= getFieldWidth() ||
             phantom.getX() + phantom.getWidth() >= getFieldWidth()) {
                 p1Score++;
                 resetPosition();
+                playSound(SCORING_SFX_FILE);
             }
         }
         // Check for ball
         if (ball.getX() <= 0) {
             p2Score++;
             resetPosition();
+            playSound(SCORING_SFX_FILE);
         }
         if (ball.getX() + ball.getWidth() >= getFieldWidth()) {
             p1Score++;
             resetPosition();
+            playSound(SCORING_SFX_FILE);
         }
 
         // Check if any player won
         if (p1Score >= WIN_SCORE) {
             stopGame();  // Pause the game
             p1Wins();
+            playSound(GAME_OVER_SFX_FILE);
         }
         if (p2Score >= WIN_SCORE) {
             stopGame();
             p2Wins();
+            playSound(GAME_OVER_SFX_FILE);
         }
     }
 
