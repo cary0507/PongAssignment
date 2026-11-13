@@ -6,11 +6,13 @@
 
 package csta.ibm.pong;  // This can access package-private classes like _WinDialog
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,6 +42,8 @@ public class Pong extends Game {
     private ArrayList<Ball> ballPhantoms = new ArrayList<>();
     private Paddle player1;  // Left paddle
     private Paddle player2;  // Right paddle
+    // There should be only one phantom power up appearing on the screen
+    private PhantomPowerUp phantomPowerUp;
     private JLabel scores;  // Display score
     private JLabel readyMsg;
 
@@ -100,6 +104,26 @@ public class Pong extends Game {
     }
 
     /**
+     * Converts path to BufferedImage
+     * <a href="https://www.youtube.com/watch?v=oPzPpUcDiYY&list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq&index=8">
+     *     Reference
+     * </a>
+     *
+     * @param path the path to an image (Must start with a "/")
+     * @return the BufferedImage, if exists
+     * */
+    public static BufferedImage pathToImage(String path) {
+        BufferedImage img;
+        try {
+            img = ImageIO.read(Pong.class.getResourceAsStream(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return img;
+    }
+
+    /**
      * Reset the ball to the center of the screen, and reset the paddles to the edges of the screen
      * Paused the game for 3 seconds for the players to be ready
      * */
@@ -111,7 +135,6 @@ public class Pong extends Game {
         ball.setSize(ballRadius, ballRadius);
         ball.setX(ballLeft); ball.setY(ballTop);
         ball.setVelocity(-5, 0);
-
         // Paddles setup
         int initialPaddleSpeed = 5;
         int paddleWidth = 10;
@@ -177,9 +200,11 @@ public class Pong extends Game {
         scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
         scores.setHorizontalAlignment(SwingConstants.CENTER);
         // Initialize game objects
-        ball = new Ball(BOUNCE_SOUND_FILE, BOUNCE_SOUND_FILE, PHANTOM_DISAPPEAR_SOUND_FILE);
+        ball = new Ball();
         player1 = new Paddle();
         player2 = new Paddle();
+        phantomPowerUp = new PhantomPowerUp();
+
         // Setup locations
         resetPosition();
         // Add to Pong
@@ -190,25 +215,7 @@ public class Pong extends Game {
     }
 
     /**
-     * Add a ball phantom to the game. The phantom will bounce off the paddles once and then disappear.
-     * */
-    public void addBallPhantom(Ball triggerBall) {
-        Ball phantom = new Ball(BOUNCE_SOUND_FILE, PHANTOM_DISAPPEAR_SOUND_FILE, PHANTOM_DISAPPEAR_SOUND_FILE);
-        int ballRadius = 10;
-        int ballLeft = pivotOffset(CENTER_X, ballRadius);
-        int ballTop = pivotOffset(CENTER_Y, ballRadius);
-        phantom.setSize(ballRadius, ballRadius);
-        phantom.setX(ballLeft); phantom.setY(ballTop);
-        int phantomDx = (int) (triggerBall.getDX() * 0.6);  // Slower than the triggering ball
-        int phantomDy = -triggerBall.getDX();  // Opposite vertical direction of the triggering ball
-        phantom.setVelocity(-3, 0);  // Slower than normal ball
-        phantom.setColor(Color.GRAY);  // Different color to distinguish from normal ball
-        ballPhantoms.add(phantom);
-        add(phantom);
-    }
-
-    /**
-     * Check the collision of ball phantoms
+     * Check the collision of phantoms
      * */
     private void phantomCollision() {
         for (Ball phantom : ballPhantoms) {
@@ -220,6 +227,7 @@ public class Pong extends Game {
             // Disappear after hitting the paddles
             if (phantom.collides(player1) || phantom.collides(player2)) {
                 ballPhantoms.remove(phantom);
+                remove(phantom);  // Remove from the game
                 playSound(PHANTOM_DISAPPEAR_SOUND_FILE);
             }
         }
