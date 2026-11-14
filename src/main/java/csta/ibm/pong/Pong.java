@@ -28,13 +28,13 @@ import java.util.ArrayList;
  * */
 public class Pong extends Game {
     // SFX file paths
-    private static final String BOUNCE_SOUND_FILE = "/sfx/tung.wav";
-    private static final String PHANTOM_DISAPPEAR_SOUND_FILE = "/sfx/sahur.wav";
-    private static final String POWER_UP_SFX_FILE = "/sfx/tung sahur.wav";
-    private static final String SCORING_SFX_FILE = "/sfx/scoring.wav";
-    private static final String GAME_OVER_SFX_FILE = "/sfx/game over.wav";
+    private final String BOUNCE_SOUND_FILE = "/sfx/tung.wav";
+    private final String PHANTOM_DISAPPEAR_SOUND_FILE = "/sfx/sahur.wav";
+    private final String POWER_UP_SFX_FILE = "/sfx/tung sahur.wav";
+    private final String SCORING_SFX_FILE = "/sfx/scoring.wav";
+    private final String GAME_OVER_SFX_FILE = "/sfx/game over.wav";
     // Image file paths
-    private static final String POWER_UP_IMG_FILE = "/img/power up1.png";
+    private final String POWER_UP_IMG_FILE = "/img/power up1.png";
 
     // Game objects
     private Ball ball;
@@ -140,6 +140,16 @@ public class Pong extends Game {
     }
 
     /**
+     * Pause the game for 3 seconds and show the ready text to make the players get ready
+     * */
+    public void gameReady() throws InterruptedException {
+        readyMsg.setVisible(true);
+        repaint();
+        Thread.sleep(3000);
+        readyMsg.setVisible(false);
+    }
+
+    /**
      * Reset the ball to the center of the screen, and reset the paddles to the edges of the screen
      * Paused the game for 3 seconds for the players to be ready. Uses proportions of the screen size to set the
      * positions of the ball and paddles, so it works for any screen size.
@@ -152,15 +162,15 @@ public class Pong extends Game {
         int scoresHeight = (int) (50 * scaleFactor);
         int scoreLeft = pivotOffset(CENTER_X, scoresWidth);
         scores.setFont(new Font("Arial", Font.PLAIN, fontSize));
-        scores.setForeground(Color.white);
+        scores.setForeground(Color.WHITE);
         scores.setBounds(scoreLeft, 0, scoresWidth, scoresHeight);
 
         int readyWidth = (int) (200 * scaleFactor);
         int readyHeight = (int) (50 * scaleFactor);
         int readyLeft = pivotOffset(CENTER_X, readyWidth);
-        int readyTop = pivotOffset(CENTER_Y, readyHeight);
+        int readyTop = pivotOffset(CENTER_Y - (int) (40 * scaleFactor), readyHeight);
         readyMsg.setFont(new Font("Arial", Font.BOLD, fontSize));
-        readyMsg.setForeground(Color.yellow);
+        readyMsg.setForeground(Color.YELLOW);
         readyMsg.setBounds(readyLeft, readyTop, readyWidth, readyHeight);
         // Ball setup
         int ballRadius = (int) (10 * scaleFactor);  // Scale the ball size based on the window size
@@ -195,6 +205,12 @@ public class Pong extends Game {
         phantomPowerUp.setPossibleZone(
                 lowerBoundX, lowerBoundY, upperBoundX, upperBoundY
         );
+        // Get ready
+        try {
+            gameReady();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -241,7 +257,7 @@ public class Pong extends Game {
         scores = new JLabel();
         scores.setHorizontalAlignment(SwingConstants.CENTER);
         add(scores);  // Add to board
-        readyMsg = new JLabel("Get Ready!");
+        readyMsg = new JLabel("GET READY");
         readyMsg.setHorizontalAlignment(SwingConstants.CENTER);
         add(readyMsg);
 
